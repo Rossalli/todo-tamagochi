@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo Tamagochi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <h1>Todo Tamagochi</h1>
+
+    <p id="save-warning" class="save-warning" role="status" hidden>
+      Não foi possível salvar neste navegador. Suas tarefas continuam aqui, mas somem se você fechar a página.
+    </p>
+
+    <section class="pet" aria-label="Seu bichinho">
+      <canvas id="pet" width="20" height="16" role="img"></canvas>
+      <p class="pet-name-row">
+        <strong id="pet-name"></strong>
+        <button type="button" id="rename" class="ghost"></button>
+      </p>
+      <p id="stage-label" class="stage-label"></p>
+      <div id="energy" class="energy">
+        <div id="energy-bar" class="energy-bar" role="meter" aria-label="Energia do bichinho" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"></div>
+        <p id="energy-text" class="energy-text"></p>
+      </div>
+    </section>
+
+    <details class="closet">
+      <summary id="closet-summary">Armário</summary>
+      <div id="closet"></div>
+    </details>
+
+    <section id="reward-banner" class="reward-banner" hidden>
+      <p id="reward-banner-text"></p>
+      <button type="button" id="reward-open">Escolher recompensa</button>
+    </section>
+
+    <form id="add-form" autocomplete="off">
+      <label for="task-input">Nova tarefa</label>
+      <div class="add-row">
+        <input id="task-input" type="text" placeholder="Algo pequeno e fácil" aria-describedby="form-error">
+        <button type="submit">Adicionar</button>
+      </div>
+      <p id="form-error" class="error" role="alert"></p>
+    </form>
+
+    <p id="count" class="count"></p>
+
+    <ul id="task-list" class="task-list" aria-label="Tarefas"></ul>
+    <p id="empty" class="empty">Nenhuma tarefa ainda.</p>
+
+    <section class="diary" aria-labelledby="diary-title">
+      <h2 id="diary-title">Diário</h2>
+      <p id="diary-announce" class="sr-only" aria-live="polite"></p>
+      <ol id="diary-list" class="diary-list"></ol>
+      <p id="diary-empty" class="empty">O diário ainda está em branco.</p>
+    </section>
+  </main>
+  <dialog id="name-dialog" class="reward-dialog" aria-labelledby="name-title">
+    <form id="name-form" autocomplete="off">
+      <h2 id="name-title">Como vai se chamar o seu bichinho?</h2>
+      <label for="name-input">Nome (até 20 letras)</label>
+      <input id="name-input" type="text" aria-describedby="name-error">
+      <p id="name-error" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="submit">Salvar</button>
+        <button type="button" id="name-later" class="ghost">Depois</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="reward-dialog" class="reward-dialog" aria-labelledby="reward-title">
+    <h2 id="reward-title">Escolha uma recompensa</h2>
+    <p id="reward-desc"></p>
+    <ul id="reward-options" class="reward-options"></ul>
+    <button type="button" id="reward-later" class="ghost">Depois</button>
+  </dialog>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

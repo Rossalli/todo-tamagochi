@@ -1,0 +1,194 @@
+:root {
+  --ink: #3b2a20;
+  --paper: #fdf6ec;
+  --card: #ffffff;
+  --accent: #ffd23f;
+  --muted: #6b5546;
+  --danger: #a3261f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  margin: 0;
+}
+
+#app {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h1 { font-size: 1.5rem; margin: 0 0 1.25rem; }
+
+.pet { text-align: center; margin-bottom: 1.5rem; }
+
+#pet {
+  box-sizing: content-box;
+  width: 240px;
+  height: 192px;
+  image-rendering: pixelated;
+  background: #fff8ee;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+}
+
+.stage-label { margin: .4rem 0 0; color: var(--muted); font-size: .9rem; }
+
+label { display: block; font-weight: 600; margin-bottom: .35rem; }
+
+.add-row { display: flex; gap: .5rem; }
+
+input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  color: var(--ink);
+  padding: .55rem .7rem;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+button {
+  font: inherit;
+  color: var(--ink);
+  padding: .55rem .9rem;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+button.ghost { background: transparent; padding: .3rem .6rem; font-size: .85rem; }
+
+:focus-visible { outline: 3px solid #1a5fd0; outline-offset: 2px; }
+
+.error { color: var(--danger); min-height: 1.25rem; margin: .4rem 0 0; font-size: .9rem; }
+.count { color: var(--muted); font-size: .9rem; margin: 1rem 0 .5rem; }
+.empty { color: var(--muted); }
+
+.task-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: .55rem .7rem;
+}
+
+.task input[type="checkbox"] { width: 1.5rem; height: 1.5rem; flex: none; } /* alvo mínimo de 24px */
+.task .text { flex: 1; overflow-wrap: anywhere; }
+.task.done .text { text-decoration: line-through; color: var(--muted); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.diary { margin-top: 2rem; }
+.diary h2 { font-size: 1.1rem; margin: 0 0 .6rem; }
+
+.diary-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+
+.diary-entry {
+  overflow-wrap: anywhere; /* a frase leva o texto da tarefa e o nome, que podem ser uma palavra só */
+  background: var(--card);
+  border-left: 6px solid var(--accent);
+  border-radius: 6px;
+  padding: .55rem .8rem;
+}
+
+.diary-entry time { display: block; color: var(--muted); font-size: .8rem; margin-top: .2rem; }
+
+.reward-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  background: var(--accent);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: .6rem .8rem;
+  margin-bottom: 1rem;
+}
+.reward-banner[hidden] { display: none; }
+.reward-banner p { margin: 0; font-weight: 600; }
+.reward-banner button { background: var(--card); }
+
+.reward-dialog {
+  max-width: 440px;
+  width: calc(100% - 2rem);
+  color: var(--ink);
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.reward-dialog::backdrop { background: rgba(59, 42, 32, .55); }
+.reward-dialog h2 { margin: 0 0 .4rem; font-size: 1.15rem; }
+.reward-dialog p { margin: 0 0 .9rem; color: var(--muted); }
+
+.reward-options { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .5rem; }
+.reward-options button { width: 100%; text-align: left; background: var(--card); }
+.reward-options .hint { display: block; font-size: .8rem; color: var(--muted); }
+
+.closet { margin: 0 0 1.25rem; background: var(--card); border: 2px solid var(--ink); border-radius: 8px; padding: .5rem .8rem; }
+.closet summary { cursor: pointer; font-weight: 600; }
+.closet-group { margin-top: .8rem; }
+.closet-group h3 { font-size: .9rem; margin: 0 0 .35rem; color: var(--muted); }
+.closet-items { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; margin: 0; padding: 0; }
+.closet-items button { padding: .35rem .6rem; font-size: .9rem; background: var(--card); }
+.closet-items button[aria-pressed="true"] { background: var(--accent); font-weight: 600; }
+/* A dica "só no bebê" está no texto do botão, então ele precisa continuar legível (4.5:1). */
+.closet-items button:disabled { opacity: .75; cursor: not-allowed; border-style: dashed; }
+.closet-note { color: var(--muted); font-size: .9rem; margin: .6rem 0 0; }
+
+.pet-name-row { display: flex; align-items: center; justify-content: center; gap: .5rem; margin: .5rem 0 0; }
+.pet-name-row strong { font-size: 1.1rem; overflow-wrap: anywhere; }
+.dialog-actions { display: flex; gap: .5rem; }
+
+.energy { margin: .6rem auto 0; max-width: 260px; }
+.energy-bar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
+.energy-bar span { height: .7rem; border: 2px solid var(--ink); border-radius: 3px; background: var(--card); }
+.energy-bar span.on { background: var(--accent); }
+.energy-text { margin: .35rem 0 0; font-size: .85rem; color: var(--muted); }
+
+/* Com sono e dormindo usam tons calmos: nunca vermelho. */
+.energy.sleepy .energy-bar span.on { background: #b8a9e8; }
+.energy.sleepy .energy-text { color: #4a3a82; font-weight: 600; }
+.energy.asleep .energy-bar span { border-color: #8a7d73; }
+.energy.asleep .energy-text { color: #4a3a82; }
+
+::placeholder { color: var(--muted); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.save-warning {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+  border-radius: 8px;
+  padding: .6rem .8rem;
+  margin: 0 0 1rem;
+}
+.save-warning[hidden] { display: none; }

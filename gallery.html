@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galeria de itens</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .gallery { max-width: 980px; margin: 2rem auto; padding: 0 1rem; }
+    .gallery h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+    .item { margin: 0 0 1.5rem; }
+    .item h3 { font-size: .95rem; margin: 0 0 .4rem; }
+    .stages { display: flex; flex-wrap: wrap; gap: .75rem; }
+    figure { margin: 0; text-align: center; font-size: .8rem; color: var(--muted); }
+    figure canvas { box-sizing: content-box; display: block; width: 140px; height: 112px; image-rendering: pixelated; background: #fff8ee; border: 2px solid var(--ink); border-radius: 8px; }
+    .pending { color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main class="gallery">
+    <h1>Galeria de itens</h1>
+    <p>Cada item em cada estágio em que ele aparece. Itens de mão usam a margem ao lado do corpo.</p>
+    <div id="gallery"></div>
+  </main>
+
+  <script type="module">
+    import { CATALOG } from "./src/data/items.js";
+    import { FRAME_WIDTH, STAGE_LABEL, composeFrame, drawSprite } from "./src/sprites.js";
+
+    const SLOT_TITLE = { head: "Cabeça", face: "Rosto", hold: "Mão" };
+    const STAGES = ["baby", "pup", "young", "adult"];
+    const root = document.getElementById("gallery");
+
+    function figure(stage, active, label) {
+      const fig = document.createElement("figure");
+      const canvas = document.createElement("canvas");
+      canvas.width = FRAME_WIDTH;
+      canvas.height = 16;
+      drawSprite(canvas, composeFrame(stage, active));
+      const cap = document.createElement("figcaption");
+      cap.textContent = label;
+      fig.append(canvas, cap);
+      return fig;
+    }
+
+    for (const slot of ["head", "face", "hold"]) {
+      const h2 = document.createElement("h2");
+      h2.textContent = SLOT_TITLE[slot];
+      root.append(h2);
+
+      for (const item of CATALOG.filter((i) => i.slot === slot)) {
+        const wrap = document.createElement("section");
+        wrap.className = "item";
+        const h3 = document.createElement("h3");
+        const scope = item.scope === "general" ? "" : ` (só no ${STAGE_LABEL[item.scope]})`;
+        h3.textContent = `${item.name}${scope}`;
+        wrap.append(h3);
+
+        if (!item.art) {
+          const p = document.createElement("p");
+          p.className = "pending";
+          p.textContent = "sem arte ainda";
+          wrap.append(p);
+        } else {
+          const row = document.createElement("div");
+          row.className = "stages";
+          for (const stage of STAGES.filter((s) => item.art[s])) {
+            row.append(figure(stage, { [slot]: item }, STAGE_LABEL[stage]));
+          }
+          wrap.append(row);
+        }
+        root.append(wrap);
+      }
+    }
+  </script>
+</body>
+</html>

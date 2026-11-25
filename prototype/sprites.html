@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste de sprites: raposa</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #fdf6ec; color: #3b2a20; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1rem; margin-top: 2rem; }
+  .row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  figure { margin: 0; text-align: center; font-size: .85rem; }
+  canvas { image-rendering: pixelated; background: #fff8ee; border: 2px solid #3b2a20; border-radius: 8px; width: 160px; height: 160px; }
+  .diary { background: #fff; border: 2px solid #3b2a20; border-radius: 8px; padding: 1rem; margin-top: .5rem; min-height: 3rem; }
+  button { font: inherit; padding: .4rem .8rem; border: 2px solid #3b2a20; background: #ffd23f; border-radius: 6px; cursor: pointer; }
+  input { font: inherit; padding: .35rem; border: 2px solid #3b2a20; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Teste de sprites: raposa 16×16</h1>
+
+<h2>Estágios</h2>
+<div class="row" id="stages"></div>
+
+<h2>Itens (no estágio adulto)</h2>
+<div class="row" id="items"></div>
+
+<h2>Diário (templates)</h2>
+<p>
+  Tarefa: <input id="task" value="lavar a louça">
+  Item: <select id="itemSel"><option value="">(nenhum)</option><option>chapéu de festa</option><option>óculos de sol</option><option>coroa</option></select>
+  <button id="go">Concluir tarefa</button>
+</p>
+<div class="diary" id="diary">Clique em "Concluir tarefa".</div>
+
+<script>
+const PAL = {
+  o: '#3b2a20', f: '#ee8a2f', w: '#fff1dc', k: '#1b1b1b',
+  r: '#e0405a', y: '#ffd23f', b: '#3a7bd5'
+};
+
+// Raposa adulta, 16x16
+const ADULT = [
+  "................",
+  "..oo........oo..",
+  ".offo......offo.",
+  ".offfo....offfo.",
+  ".offfoooooofffo.",
+  "offffffffffffffo",
+  "offfkffffffkfffo",
+  "owwwffffffffwwwo",
+  "owwwwwwkkwwwwwwo",
+  ".owwwwwwwwwwwwo.",
+  "..oowwwwwwwwoo..",
+  "..offfwwwwfffo..",
+  "..offfwwwwfffofo",
+  "..offfffffffffowo".slice(0, 16),
+  "..ooooooooooooo.",
+  "................"
+];
+// linhas 11-14 com cauda (adulto). Ajustes de cauda:
+ADULT[11] = "..offfwwwwfffoo.";
+ADULT[12] = "..offfwwwwfffofo";
+ADULT[13] = "..offffffffffowo";
+ADULT[14] = "..ooooooooooooo.";
+
+// Jovem: sem cauda
+const YOUNG = ADULT.map((row, i) => (i >= 11 && i <= 14) ? row.slice(0, 14) + ".." : row);
+
+// Ovo: casca creme com manchas laranja
+const EGG = [
+  "................",
+  "................",
+  "................",
+  "......oooo......",
+  ".....owwwwo.....",
+  "....owwfwwwo....",
+  "...owwwwwwwwo...",
+  "...owwwwwffwo...",
+  "..owwwwwwwwwwo..",
+  "..owwfwwwwwwwo..",
+  "..owwwwwwwwwwo..",
+  "...owwwffwwwo...",
+  "...owwwwwwwwo...",
+  "....owwwwwwo....",
+  ".....oooooo.....",
+  "................"
+];
+
+// Bebê: cabecinha pequena
+const BABY = [
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "....oo....oo....",
+  "...offo..offo...",
+  "..offooooooffo..",
+  "..offffffffffo..",
+  "..ofkffffffkfo..",
+  "..owwwwkkwwwwo..",
+  "...owwwwwwwwo...",
+  "....oooooooo...."
+];
+
+// Filhote: só cabeça + corpinho
+const PUP = [
+  ...Array(4).fill("................"),
+  ...ADULT.slice(1, 11),
+  "...offwwwwffo...",
+  "...oooooooooo..."
+];
+
+// Itens: grade, x, y
+const ITEMS = {
+  "chapéu de festa": { x: 5, y: 1, g: ["..y..", ".rrr.", "rbrbr"] },
+  "óculos de sol":   { x: 3, y: 6, g: ["kkkkkkkkkk", "kkk....kkk"] },
+  "coroa":           { x: 5, y: 2, g: ["y.yy.y", "yyyyyy", "yryyry"] }
+};
+
+function check(name, g) {
+  g.forEach((r, i) => { if (r.length !== 16) console.warn(name, 'linha', i, 'tem', r.length); });
+  if (g.length !== 16) console.warn(name, 'tem', g.length, 'linhas');
+}
+check('ADULT', ADULT); check('YOUNG', YOUNG); check('PUP', PUP); check('BABY', BABY); check('EGG', EGG);
+
+function draw(canvas, grid, item) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 16, 16);
+  const put = (g, ox, oy) => g.forEach((row, y) => [...row].forEach((c, x) => {
+    if (c !== '.' && PAL[c]) { ctx.fillStyle = PAL[c]; ctx.fillRect(ox + x, oy + y, 1, 1); }
+  }));
+  put(grid, 0, 0);
+  if (item && ITEMS[item]) put(ITEMS[item].g, ITEMS[item].x, ITEMS[item].y);
+}
+
+function fig(label, grid, item) {
+  const f = document.createElement('figure');
+  const c = document.createElement('canvas'); c.width = 16; c.height = 16;
+  draw(c, grid, item);
+  f.appendChild(c);
+  const cap = document.createElement('figcaption'); cap.textContent = label;
+  f.appendChild(cap);
+  return f;
+}
+
+const stages = document.getElementById('stages');
+stages.append(
+  fig('1. Ovo (0–2 tarefas)', EGG),
+  fig('2. Bebê (3–9)', BABY),
+  fig('3. Filhote (10–29)', PUP),
+  fig('4. Jovem (30–59)', YOUNG),
+  fig('5. Adulto (60+)', ADULT)
+);
+
+const items = document.getElementById('items');
+Object.keys(ITEMS).forEach(n => items.appendChild(fig(n, ADULT, n)));
+
+// Templates (amostra do banco de 100)
+const A = [
+  "{pet} viu você terminar “{tarefa}” e comemorou rolando no chão.",
+  "Depois de “{tarefa}”, {pet} comeu tanto que precisou de uma soneca.",
+  "{pet} escreveu um poema sobre “{tarefa}”. Só tem a palavra “nham”.",
+  "{pet} cresceu um milímetro por causa de “{tarefa}”. Medido com régua oficial."
+];
+const B = [
+  "Com {item}, {pet} acompanhou “{tarefa}” como um verdadeiro profissional.",
+  "{pet} organizou um desfile de moda: tema “{tarefa}”, destaque para {item}.",
+  "{pet} deu um brinde com {item} em homenagem a “{tarefa}”."
+];
+document.getElementById('go').onclick = () => {
+  const task = document.getElementById('task').value || 'fazer algo';
+  const item = document.getElementById('itemSel').value;
+  const pool = item ? A.concat(B) : A;
+  const t = pool[Math.floor(Math.random() * pool.length)];
+  document.getElementById('diary').textContent =
+    t.replaceAll('{pet}', 'Fuyu').replaceAll('{tarefa}', task).replaceAll('{item}', item);
+};
+</script>
+</body>
+</html>
