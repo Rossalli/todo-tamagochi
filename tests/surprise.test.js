@@ -24,6 +24,7 @@ const SPECIES = /raposa|raposinha|fox/i;
 
 test("nenhum texto da interface revela a espécie (o ovo é surpresa)", () => {
   const files = [
+    "README.md", // a vitrine pública do repositório
     "index.html",
     "src/app.js",
     "src/state.js",

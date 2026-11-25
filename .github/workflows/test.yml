@@ -1,0 +1,27 @@
+name: Testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Só leitura: o workflow apenas roda os testes, não publica nem escreve em nada.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      # Uma versão do Node falhar não pode esconder o resultado das outras.
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # O projeto não tem dependências, então não há o que instalar.
+      - run: npm test
